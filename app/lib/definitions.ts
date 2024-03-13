@@ -5,15 +5,16 @@
 export type User = {
   id: string;
   name: string;
-  email: string;
+  username: string;
   password: string;
 };
 
-export type Customer = {
+export type Interno = {
   id: string;
-  name: string;
-  email: string;
-  image_url: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  edad: number
 };
 
 export type Invoice = {
@@ -44,40 +45,37 @@ export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
   amount: number;
 };
 
-export type InvoicesTable = {
+export type SalidasTable = {
   id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
+  interno_id: string;
   date: string;
-  amount: number;
-  status: 'pending' | 'paid';
 };
 
-export type CustomersTable = {
+export type EntradasTable = {
   id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: number;
-  total_paid: number;
+  interno_id: string;
+  date: string;
 };
 
-export type FormattedCustomersTable = {
+export type InternosTable = {
   id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  edad: number
 };
 
-export type CustomerField = {
+export type FormattedInternosTable = {
   id: string;
-  name: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  edad: number
+};
+
+export type InternoField = {
+  id: string;
+  nombre: string;
 };
 
 export type InvoiceForm = {

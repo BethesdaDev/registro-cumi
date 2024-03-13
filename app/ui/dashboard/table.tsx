@@ -40,9 +40,6 @@ export default async function CustomersTable({query}:{query: string}) {
                         </p>
                       </div>
                     </div>
-                    <div className="pt-4 text-sm">
-                      <p>{customer.apellido_materno} invoices</p>
-                    </div>
                   </div>
                 ))}
               </div>

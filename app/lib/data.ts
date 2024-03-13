@@ -1,12 +1,13 @@
 import { sql } from '@vercel/postgres';
 import {
-  CustomerField,
-  CustomersTable,
   InvoiceForm,
-  InvoicesTable,
   LatestInvoiceRaw,
   User,
   Revenue,
+  InternoField,
+  InternosTable,
+  EntradasTable,
+  SalidasTable,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -16,12 +17,6 @@ export async function fetchRevenue() {
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
   noStore();
   try {
-    // Artificially delay a reponse for demo purposes.
-    // Don't do this in real life :)
-
-    // console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue>`SELECT * FROM revenue`;
 
     // console.log('Data fetch complete after 3 seconds.');
@@ -90,30 +85,45 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices( query: string, currentPage: number,) {
+export async function fetchFilteredEntradas( query: string, currentPage: number,) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await sql<InvoicesTable>`
+    const invoices = await sql<EntradasTable>`
       SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
+        id,
+        interno_id,
+        date
+      FROM entradas
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
+        date::text ILIKE ${`%${query}%`}
+      ORDER BY date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return invoices.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
+
+const ITEMS_PER_PAGE = 6;
+export async function fetchFilteredSalidas( query: string, currentPage: number,) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const invoices = await sql<SalidasTable>`
+      SELECT
+        id,
+        interno_id,
+        date
+      FROM salidas
+      WHERE
+        date::text ILIKE ${`%${query}%`}
+      ORDER BY date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -128,14 +138,7 @@ export async function fetchInvoicesPages(query: string) {
   noStore();
   try {
     const count = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+    FROM entradas
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
@@ -174,60 +177,56 @@ export async function fetchInvoiceById(id: string) {
 export async function fetchCustomers() {
   noStore();
   try {
-    const data = await sql<CustomerField>`
+    const data = await sql<InternoField>`
       SELECT
         id,
-        name
-      FROM customers
-      ORDER BY name ASC
+        nombre
+      FROM internos
+      ORDER BY nombre ASC
     `;
 
     const customers = data.rows;
     return customers;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch all customers.');
+    throw new Error('Failed to fetch all internos.');
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
+export async function fetchFilteredInternos(query: string) {
   noStore();
   try {
-    const data = await sql<CustomersTable>`
+    const data = await sql<InternosTable>`
 		SELECT
-		  customers.id,
-		  customers.name,
-		  customers.email,
-		  customers.image_url,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
+		  id,
+		  nombre,
+		  apellido_paterno,
+		  apellido_materno,
+		  edad
+		FROM internos
 		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
-		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-		ORDER BY customers.name ASC
+		  nombre ILIKE ${`%${query}%`} OR
+		    apellido_paterno ILIKE ${`%${query}%`} OR
+		    apellido_materno ILIKE ${`%${query}%`}
+		GROUP BY id, nombre, apellido_paterno, apellido_materno, edad
+		ORDER BY nombre ASC
 	  `;
 
     const customers = data.rows.map((customer) => ({
       ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
     }));
 
     return customers;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch customer table.');
+    throw new Error('Failed to fetch internos table.');
   }
 }
 
 export async function getUser(email: string) {
   noStore();
   try {
-    const user = await sql`SELECT * from USERS where email=${email}`;
+    const user = await sql`SELECT * from USERS where username=${email}`;
     return user.rows[0] as User;
   } catch (error) {
     console.error('Failed to fetch user:', error);
