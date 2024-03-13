@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import { InternoField, InvoiceForm } from '@/app/lib/definitions';
 import {
   CheckIcon,
   ClockIcon,
@@ -17,7 +17,7 @@ export default function EditInvoiceForm({
   customers,
 }: {
   invoice: InvoiceForm;
-  customers: CustomerField[];
+  customers: InternoField[];
 }) {
   // this not necessary, and invoice.id is the argument need
   const initialState = { message: null, errors: {} };
@@ -45,7 +45,7 @@ export default function EditInvoiceForm({
               </option>
               {customers.map((customer) => (
                 <option key={customer.id} value={customer.id}>
-                  {customer.name}
+                  {customer.nombre}
                 </option>
               ))}
             </select>
