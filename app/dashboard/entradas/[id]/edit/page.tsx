@@ -1,5 +1,5 @@
 import Form from '@/app/ui/entradas/edit-form';
-import Breadcrumbs from '@/app/ui/entradas/breadcrumbs';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
 import { fetchCustomers, fetchInvoiceById } from '@/app/lib/data';
 import { InternoField, InvoiceForm } from '@/app/lib/definitions';
 import { notFound } from 'next/navigation';

@@ -1,5 +1,5 @@
 import Form from '@/app/ui/entradas/create-form';
-import Breadcrumbs from '@/app/ui/entradas/breadcrumbs';
+import Breadcrumbs from '@/app/ui/breadcrumbs';
 import { fetchCustomers } from '@/app/lib/data';
  
 export default async function Page() {

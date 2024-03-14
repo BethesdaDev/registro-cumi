@@ -1,4 +1,4 @@
-import CustomersTable from '@/app/ui/customers/table';
+import CustomersTable from '@/app/ui/dashboard/table';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 

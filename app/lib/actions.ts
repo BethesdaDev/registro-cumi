@@ -8,49 +8,47 @@ import { signIn } from '@/auth';
  
 const InvoiceSchema = z.object({
   id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
-  }),
-  amount: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
-  }),
+  nombre: z.string(),
+  apellido_paterno: z.string(),
+  apellido_materno: z.string(),
+  edad: z.string(),
   date: z.string(),
 });
  
-const CreateInvoice = InvoiceSchema.omit({ id: true, date: true });
+const RegistrarInterno = InvoiceSchema.omit({ id: true, date: true });
 
 export type State = {
   errors?: {
-    customerId?: string[];
-    amount?: string[];
-    status?: string[];
+    nombre?: string[];
+    apellido_paterno?: string[];
+    apellido_materno?: string[];
+    edad?: string[];
   };
   message?: string | null;
 };
  
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function registrarInterno(prevState: State, formData: FormData) {
     
     // Validate form fields using Zod
-    const validatedFields = CreateInvoice.safeParse({
-      customerId: formData.get('customerId'),
-      amount: formData.get('amount'),
-      status: formData.get('status'),
+    const validatedFields = RegistrarInterno.safeParse({
+      nombre: formData.get('nombre'),
+      apellido_paterno: formData.get('apellido_paterno'),
+      apellido_materno: formData.get('apellido_materno'),
+      edad: formData.get('edad')
     });
 
     // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
+      console.log(validatedFields.error.flatten().fieldErrors);
+      
       return {
         errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Invoice.',
+        message: 'Campos faltantes, Error al registrar al interno',
       };
     }
 
     // Prepare data for insertion into the database
-    const { customerId, amount, status } = validatedFields.data;
-    const amountInCents = amount * 100;
+    const { nombre, apellido_paterno, apellido_materno, edad } = validatedFields.data;
     const date = new Date().toISOString().split('T')[0];
 
     // Test it out:
@@ -58,17 +56,19 @@ export async function createInvoice(prevState: State, formData: FormData) {
     // Insert data into the database
     try{
       await sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
+        INSERT INTO internos (nombre, apellido_paterno, apellido_materno, edad)
+        VALUES (${nombre}, ${apellido_paterno}, ${apellido_materno}, ${edad})`;
+        
     } catch (error) {
+      console.error(error);
       return {
-        message: 'Database Error: Failed to Create Invoice.',
+        message: 'Database Error: Failed to Register Interno.',
       };
     }
   
     // Revalidate the cache for the invoices page and redirect the user.
-    revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
+    revalidatePath('/dashboard');
+    redirect('/dashboard');
 }
 
 // Use Zod to update the expected types
@@ -97,8 +97,9 @@ export async function updateInvoice(
     };
   }
 
+  /*
   // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
+  const { nombre, amount, status } = validatedFields.data;
   const amountInCents = amount * 100;
   // Insert data into the database
   try {
@@ -110,6 +111,7 @@ export async function updateInvoice(
   } catch (error) {
     return { message: 'Database Error: Failed to Update Invoice.' };
   }
+  */
   // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');

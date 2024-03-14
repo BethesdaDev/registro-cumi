@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
-import { RegistrarInterno } from '@/app/ui/entradas/buttons';
+import { RegistrarInterno } from '@/app/ui/buttons';
 import { InternosTable, FormattedInternosTable } from '@/app/lib/definitions';
 import { fetchFilteredInternos } from '@/app/lib/data';
 
