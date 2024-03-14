@@ -174,8 +174,9 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
-export async function fetchCustomers() {
+export async function fetchInternos() {
   noStore();
+
   try {
     const data = await sql<InternoField>`
       SELECT
@@ -193,8 +194,25 @@ export async function fetchCustomers() {
   }
 }
 
-export async function fetchFilteredInternos(query: string) {
+export async function fetchInternosPages(query: string) {
   noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM internos
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of invoices.');
+  }
+}
+
+export async function fetchFilteredInternos(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
   try {
     const data = await sql<InternosTable>`
 		SELECT
@@ -210,6 +228,7 @@ export async function fetchFilteredInternos(query: string) {
 		    apellido_materno ILIKE ${`%${query}%`}
 		GROUP BY id, nombre, apellido_paterno, apellido_materno, edad
 		ORDER BY nombre ASC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
 	  `;
 
     const customers = data.rows.map((customer) => ({

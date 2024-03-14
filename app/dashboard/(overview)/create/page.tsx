@@ -1,9 +1,9 @@
 import Form from '@/app/ui/dashboard/create-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchInternos } from '@/app/lib/data';
  
 export default async function Page() {
-  const customers = await fetchCustomers();
+  const internos = await fetchInternos();
  
   return (
     <main>
@@ -17,7 +17,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form />
     </main>
   );
 }

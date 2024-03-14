@@ -1,34 +1,45 @@
-import Form from '@/app/ui/entradas/edit-form';
-import Breadcrumbs from '@/app/ui/breadcrumbs';
-import { fetchCustomers, fetchInvoiceById } from '@/app/lib/data';
-import { InternoField, InvoiceForm } from '@/app/lib/definitions';
-import { notFound } from 'next/navigation';
+import Pagination from '@/app/ui/entradas/pagination';
+import Search from '@/app/ui/search';
+import Table from '@/app/ui/entradas/table';
+import { CreateInvoice } from '@/app/ui/buttons';
+import { lusitana } from '@/app/ui/fonts';
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import { Suspense } from 'react';
+import { fetchInternos } from '@/app/lib/data';
+import { Metadata } from 'next';
  
-export default async function Page({ params }: { params: { id: string } }) {
+export const metadata: Metadata = {
+  title: 'Internos',
+};
+ 
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
 
-    const id = params.id;
-    const [invoice, customers] : [InvoiceForm | undefined , InternoField[] | undefined] = await Promise.all([
-        fetchInvoiceById(id),
-        fetchCustomers(),
-      ]);
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = await fetchInternos();
 
-    if (!invoice) {
-        notFound();
-    }
-
-    return (
-        <main>
-        <Breadcrumbs
-            breadcrumbs={[
-            { label: 'Invoices', href: '/dashboard/invoices' },
-            {
-                label: 'Edit Invoice',
-                href: `/dashboard/invoices/${id}/edit`,
-                active: true,
-            },
-            ]}
-        />
-        <Form invoice={invoice!} customers={customers} />
-        </main>
-    );
+  return (
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between">
+        <h1 className={`${lusitana.className} text-2xl`}>Entradas</h1>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Buscar entrada por fecha..." />
+        <CreateInvoice />
+      </div>
+       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} />
+      </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </div>
+  );
 }

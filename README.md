@@ -1454,7 +1454,7 @@ In addition to searchParams, page components also accept a prop called params wh
 Then:
 
 - Import a new function called fetchInvoiceById and pass the id as an argument
-- Import fetchCustomers to fetch the customer names for the dropdown.
+- Import fetchInternos to fetch the customer names for the dropdown.
 
 You can use Promise.all to fetch both the invoice and customers in parallel.
 

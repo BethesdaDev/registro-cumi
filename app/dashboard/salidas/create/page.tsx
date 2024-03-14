@@ -1,9 +1,9 @@
 import Form from '@/app/ui/salidas/create-form';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchInternos } from '@/app/lib/data';
  
 export default async function Page() {
-  const customers = await fetchCustomers();
+  const customers = await fetchInternos();
  
   return (
     <main>

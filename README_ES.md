@@ -2006,10 +2006,10 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
       ```tsx
       import Form from '@/app/ui/invoices/create-form';
       import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-      import { fetchCustomers } from '@/app/lib/data';
+      import { fetchInternos } from '@/app/lib/data';
       
       export default async function Page() {
-        const customers = await fetchCustomers();
+        const customers = await fetchInternos();
       
         return (
           <main>
@@ -2346,7 +2346,7 @@ Estos son los pasos que tomará para actualizar una factura:
     ```tsx
     import Form from '@/app/ui/invoices/edit-form';
     import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-    import { fetchCustomers } from '@/app/lib/data';
+    import { fetchInternos } from '@/app/lib/data';
     
     export default async function Page() {
       return (
@@ -2374,7 +2374,7 @@ Estos son los pasos que tomará para actualizar una factura:
     ```tsx
     import Form from '@/app/ui/invoices/edit-form';
     import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-    import { fetchCustomers } from '@/app/lib/data';
+    import { fetchInternos } from '@/app/lib/data';
     
     export default async function Page({ params }: { params: { id: string } }) {
       const id = params.id;
@@ -2387,20 +2387,20 @@ Estos son los pasos que tomará para actualizar una factura:
   - Para lograr esto vamos a tener que:
 
     - Importar una nueva función llamada `fetchInvoiceById`  y pasar la identificación **id** como argumento.
-    - Importar `fetchCustomers` para obtener los nombres de los clientes para el menú desplegable.
+    - Importar `fetchInternos` para obtener los nombres de los clientes para el menú desplegable.
 
   Puede usar `Promise.all`. Todo para obtener la factura y los clientes en paralelo.
 
   ```tsx
   import Form from '@/app/ui/invoices/edit-form';
   import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-  import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+  import { fetchInvoiceById, fetchInternos } from '@/app/lib/data';
   
   export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
     const [invoice, customers] = await Promise.all([
       fetchInvoiceById(id),
-      fetchCustomers(),
+      fetchInternos(),
     ]);
     // ...
   }
@@ -2622,7 +2622,7 @@ Ahora que sabe que la factura no existe en su base de datos, usemos Notfound par
 Luego, puede usar un condicional para invocar nofund si la factura no existe:
 
 ```tsx
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { fetchInvoiceById, fetchInternos } from '@/app/lib/data';
 import { updateInvoice } from '@/app/lib/actions';
 import { notFound } from 'next/navigation';
  
@@ -2630,7 +2630,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const [invoice, customers] = await Promise.all([
     fetchInvoiceById(id),
-    fetchCustomers(),
+    fetchInternos(),
   ]);
  
   if (!invoice) {
