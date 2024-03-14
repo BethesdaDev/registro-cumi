@@ -6,9 +6,10 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
  
+const REGEX = /asdfasdf/
 const InvoiceSchema = z.object({
   id: z.string(),
-  nombre: z.string(),
+  nombre: z.string().regex(REGEX),
   apellido_paterno: z.string(),
   apellido_materno: z.string(),
   edad: z.string(),
