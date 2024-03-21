@@ -15,28 +15,28 @@ const customers = [
     nombre: 'Juanito',
     apellido_paterno: 'Perez',
     apellido_materno: 'Perez',
-    edad: 50
+    fecha_nacimiento: '2000-09-07'
   },
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442b',
     nombre: 'Pablito',
     apellido_paterno: 'Perez',
     apellido_materno: 'Juarez',
-    edad: 40
+    fecha_nacimiento: '2000-09-07'
   },
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442c',
     nombre: 'Pedrito',
     apellido_paterno: 'Perez',
     apellido_materno: 'Gonzalez',
-    edad: 30
+    fecha_nacimiento: '2000-09-07'
   },
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442d',
     nombre: 'Pepito',
     apellido_paterno: 'Perez',
     apellido_materno: 'Suarez',
-    edad: 20
+    fecha_nacimiento: '2000-09-07'
   },
 ];
 
@@ -46,7 +46,7 @@ const salidas = [
     date: '2024-12-06',
   },
   {
-    interno_id: customers[0].id,
+    interno_id: customers[1].id,
     date: '2024-12-06',
   },
 ];
@@ -57,7 +57,7 @@ const entradas = [
     date: '2024-12-06',
   },
   {
-    interno_id: customers[0].id,
+    interno_id: customers[1].id,
     date: '2024-12-06',
   },
 ];

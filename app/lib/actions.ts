@@ -12,9 +12,10 @@ const InvoiceSchema = z.object({
   nombre: z.string(),
   apellido_paterno: z.string(),
   apellido_materno: z.string(),
-  edad: z.string(),
-  date: z.string(),
+  fecha_nacimiento: z.string(),
+  date: z.string()
 });
+ 
  
 const RegistrarInterno = InvoiceSchema.omit({ id: true, date: true });
 
@@ -23,7 +24,7 @@ export type State = {
     nombre?: string[];
     apellido_paterno?: string[];
     apellido_materno?: string[];
-    edad?: string[];
+    fecha_nacimiento?: string[];
   };
   message?: string | null;
 };
@@ -35,7 +36,7 @@ export async function registrarInterno(prevState: State, formData: FormData) {
       nombre: formData.get('nombre'),
       apellido_paterno: formData.get('apellido_paterno'),
       apellido_materno: formData.get('apellido_materno'),
-      edad: formData.get('edad')
+      fecha_nacimiento: formData.get('fecha_nacimiento')
     });
 
     // If form validation fails, return errors early. Otherwise, continue.
@@ -49,7 +50,7 @@ export async function registrarInterno(prevState: State, formData: FormData) {
     }
 
     // Prepare data for insertion into the database
-    const { nombre, apellido_paterno, apellido_materno, edad } = validatedFields.data;
+    const { nombre, apellido_paterno, apellido_materno, fecha_nacimiento } = validatedFields.data;
     const date = new Date().toISOString().split('T')[0];
 
     // Test it out:
@@ -57,8 +58,8 @@ export async function registrarInterno(prevState: State, formData: FormData) {
     // Insert data into the database
     try{
       await sql`
-        INSERT INTO internos (nombre, apellido_paterno, apellido_materno, edad)
-        VALUES (${nombre}, ${apellido_paterno}, ${apellido_materno}, ${edad})`;
+        INSERT INTO internos (nombre, apellido_paterno, apellido_materno, fecha_nacimiento)
+        VALUES (${nombre}, ${apellido_paterno}, ${apellido_materno}, ${fecha_nacimiento})`;
         
     } catch (error) {
       console.error(error);
@@ -70,6 +71,70 @@ export async function registrarInterno(prevState: State, formData: FormData) {
     // Revalidate the cache for the invoices page and redirect the user.
     revalidatePath('/dashboard');
     redirect('/dashboard');
+}
+
+const EntradaSalidaSchema = z.object({
+  interno_id: z.string(),
+  nombre: z.string(),
+  apellido_paterno: z.string(),
+  apellido_materno: z.string(),
+  date: z.string()
+});
+
+export type EntradaSalidaState = {
+  errors?: {
+    interno_id?: string[];
+    nombre?: string[];
+    apellido_paterno?: string[];
+    apellido_materno?: string[];
+    date?: string[];
+  };
+  message?: string | null;
+};
+
+export async function registrarEntrada(prevState: EntradaSalidaState, formData: FormData) {
+    
+    // Validate form fields using Zod
+    const validatedFields = EntradaSalidaSchema.safeParse({
+      interno_id: formData.get('nombre'),
+      nombre: formData.get('nombre'),
+      apellido_paterno: formData.get('nombre'),
+      apellido_materno: formData.get('nombre'),
+      date: formData.get('date')
+    });
+
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+      console.log(validatedFields.error.flatten().fieldErrors);
+      
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Campos faltantes, Error al registrar al interno',
+      };
+    }
+
+    // Prepare data for insertion into the database
+    const { interno_id, date } = validatedFields.data;
+    // const date = new Date().toISOString().split('T')[0];
+
+    // Test it out:
+    // console.log();
+    // Insert data into the database
+    try{
+      await sql`
+        INSERT INTO entradas (interno_id, date)
+        VALUES (${interno_id}, ${date})`;
+        
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Database Error: Failed to Register Entrada.',
+      };
+    }
+  
+    // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath('/dashboard/entradas');
+    redirect('/dashboard/entradas');
 }
 
 // Use Zod to update the expected types

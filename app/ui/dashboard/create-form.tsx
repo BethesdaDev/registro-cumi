@@ -101,17 +101,16 @@ export default function Form() {
           ) : null}
         </div>
         
-        {/* Edad */}
+        {/* Fecha de nacimiento */}
         <div className="mb-4">
-          <label htmlFor="edad" className="mb-2 block text-sm font-medium">
-            Edad
+          <label htmlFor="fecha_nacimiento" className="mb-2 block text-sm font-medium">
+            Fecha de nacimiento
           </label>
           <div className="relative mt-2 rounded-md">
               <input
-                id="edad"
-                name="edad"
-                type='number'
-                placeholder="Ingrese edad"
+                id="fecha_nacimiento"
+                name="fecha_nacimiento"
+                placeholder="Ingrese fecha_nacimiento"
                 className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="amount-error"
               />

@@ -14,7 +14,7 @@ export type Interno = {
   nombre: string;
   apellido_paterno: string;
   apellido_materno: string;
-  edad: number
+  fecha_nacimiento: string
 };
 
 export type Invoice = {
@@ -54,6 +54,9 @@ export type SalidasTable = {
 export type EntradasTable = {
   id: string;
   interno_id: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
   date: string;
 };
 
@@ -62,7 +65,7 @@ export type InternosTable = {
   nombre: string;
   apellido_paterno: string;
   apellido_materno: string;
-  edad: number
+  fecha_nacimiento: string
 };
 
 export type FormattedInternosTable = {
@@ -70,12 +73,15 @@ export type FormattedInternosTable = {
   nombre: string;
   apellido_paterno: string;
   apellido_materno: string;
-  edad: number
+  fecha_nacimiento: string
 };
 
 export type InternoField = {
   id: string;
+  interno_id: string;
   nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
 };
 
 export type InvoiceForm = {

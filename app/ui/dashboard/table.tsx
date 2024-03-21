@@ -46,7 +46,7 @@ export default async function InternosTable({
                   Apellido materno
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Edad
+                  Fecha de nacimiento
                 </th>
               </tr>
             </thead>
@@ -68,7 +68,7 @@ export default async function InternosTable({
                     {interno.apellido_materno}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {interno.edad}
+                    {interno.fecha_nacimiento}
                   </td>
                 </tr>
               ))}

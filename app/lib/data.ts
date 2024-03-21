@@ -90,22 +90,28 @@ export async function fetchFilteredEntradas( query: string, currentPage: number,
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await sql<EntradasTable>`
+    const entradas = await sql<EntradasTable>`
       SELECT
-        id,
-        interno_id,
-        date
-      FROM entradas
+        i.nombre, 
+        i.apellido_paterno, 
+        i.apellido_materno,
+        e.date
+      FROM internos AS i
+      INNER JOIN entradas AS e
+      ON i.id = e.interno_id
       WHERE
-        date::text ILIKE ${`%${query}%`}
+        i.nombre ILIKE ${`%${query}%`} OR
+        i.apellido_paterno ILIKE ${`%${query}%`} OR
+        i.apellido_materno ILIKE ${`%${query}%`} OR
+        e.date::text ILIKE ${`%${query}%`}
       ORDER BY date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-    return invoices.rows;
+    return entradas.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    throw new Error('Failed to fetch entradas.');
   }
 }
 
@@ -134,7 +140,7 @@ export async function fetchFilteredSalidas( query: string, currentPage: number,)
   }
 }
 
-export async function fetchInvoicesPages(query: string) {
+export async function fetchEntradasPages(query: string) {
   noStore();
   try {
     const count = await sql`SELECT COUNT(*)
@@ -181,7 +187,9 @@ export async function fetchInternos() {
     const data = await sql<InternoField>`
       SELECT
         id,
-        nombre
+        nombre,
+        apellido_paterno,
+        apellido_materno
       FROM internos
       ORDER BY nombre ASC
     `;
@@ -220,13 +228,13 @@ export async function fetchFilteredInternos(query: string, currentPage: number) 
 		  nombre,
 		  apellido_paterno,
 		  apellido_materno,
-		  edad
+		  fecha_nacimiento
 		FROM internos
 		WHERE
 		  nombre ILIKE ${`%${query}%`} OR
-		    apellido_paterno ILIKE ${`%${query}%`} OR
-		    apellido_materno ILIKE ${`%${query}%`}
-		GROUP BY id, nombre, apellido_paterno, apellido_materno, edad
+      apellido_paterno ILIKE ${`%${query}%`} OR
+      apellido_materno ILIKE ${`%${query}%`}
+		GROUP BY id, nombre, apellido_paterno, apellido_materno, fecha_nacimiento
 		ORDER BY nombre ASC
     LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
 	  `;

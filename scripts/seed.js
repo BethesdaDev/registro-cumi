@@ -133,7 +133,7 @@ async function seedInternos(client) {
         nombre VARCHAR(255) NOT NULL,
         apellido_paterno VARCHAR(255) NOT NULL,
         apellido_materno VARCHAR(255) NOT NULL,
-        edad INT NOT NULL
+        fecha_nacimiento VARCHAR(225) NOT NULL
       );
     `;
 
@@ -143,8 +143,8 @@ async function seedInternos(client) {
     const insertedCustomers = await Promise.all(
       customers.map(
         (customer) => client.sql`
-        INSERT INTO internos (id, nombre, apellido_paterno, apellido_materno, edad)
-        VALUES (${customer.id}, ${customer.nombre}, ${customer.apellido_paterno}, ${customer.apellido_materno}, ${customer.edad})
+        INSERT INTO internos (id, nombre, apellido_paterno, apellido_materno, fecha_nacimiento)
+        VALUES (${customer.id}, ${customer.nombre}, ${customer.apellido_paterno}, ${customer.apellido_materno}, ${customer.fecha_nacimiento})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -157,7 +157,7 @@ async function seedInternos(client) {
       customers: insertedCustomers,
     };
   } catch (error) {
-    console.error('Error seeding customers:', error);
+    console.error('Error seeding internos:', error);
     throw error;
   }
 }
