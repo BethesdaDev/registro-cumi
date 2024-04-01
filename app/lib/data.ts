@@ -121,22 +121,44 @@ export async function fetchFilteredSalidas( query: string, currentPage: number,)
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await sql<SalidasTable>`
+    const entradas = await sql<SalidasTable>`
       SELECT
-        id,
-        interno_id,
-        date
-      FROM salidas
+        i.nombre, 
+        i.apellido_paterno, 
+        i.apellido_materno,
+        s.date
+      FROM internos AS i
+      INNER JOIN salidas AS s
+      ON i.id = s.interno_id
       WHERE
-        date::text ILIKE ${`%${query}%`}
+        i.nombre ILIKE ${`%${query}%`} OR
+        i.apellido_paterno ILIKE ${`%${query}%`} OR
+        i.apellido_materno ILIKE ${`%${query}%`} OR
+        s.date::text ILIKE ${`%${query}%`}
       ORDER BY date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-    return invoices.rows;
+    return entradas.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    throw new Error('Failed to fetch salidas.');
+  }
+}
+
+
+export async function fetchSalidasPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM salidas
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of salidas.');
   }
 }
 

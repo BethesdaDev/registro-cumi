@@ -92,6 +92,51 @@ export type EntradaSalidaState = {
   message?: string | null;
 };
 
+export async function registrarSalida(prevState: EntradaSalidaState, formData: FormData) {
+    
+    // Validate form fields using Zod
+    const validatedFields = EntradaSalidaSchema.safeParse({
+      interno_id: formData.get('nombre'),
+      nombre: formData.get('nombre'),
+      apellido_paterno: formData.get('nombre'),
+      apellido_materno: formData.get('nombre'),
+      date: formData.get('date')
+    });
+
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+      console.log(validatedFields.error.flatten().fieldErrors);
+      
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Campos faltantes, Error al registrar al interno',
+      };
+    }
+
+    // Prepare data for insertion into the database
+    const { interno_id, date } = validatedFields.data;
+    // const date = new Date().toISOString().split('T')[0];
+
+    // Test it out:
+    // console.log();
+    // Insert data into the database
+    try{
+      await sql`
+        INSERT INTO entradas (interno_id, date)
+        VALUES (${interno_id}, ${date})`;
+        
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Database Error: Failed to Register Entrada.',
+      };
+    }
+  
+    // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath('/dashboard/entradas');
+    redirect('/dashboard/entradas');
+}
+
 export async function registrarEntrada(prevState: EntradaSalidaState, formData: FormData) {
     
     // Validate form fields using Zod

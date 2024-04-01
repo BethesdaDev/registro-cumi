@@ -32,7 +32,9 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Buscar entrada por fecha..." />
-        <CreateInvoice />
+        <CreateInvoice 
+          title='Registrar entrada'
+        />
       </div>
        <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

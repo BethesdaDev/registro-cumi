@@ -48,6 +48,9 @@ export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
 export type SalidasTable = {
   id: string;
   interno_id: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
   date: string;
 };
 
