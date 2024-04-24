@@ -133,7 +133,7 @@ async function seedInternos(client) {
         nombre VARCHAR(255) NOT NULL,
         apellido_paterno VARCHAR(255) NOT NULL,
         apellido_materno VARCHAR(255) NOT NULL,
-        fecha_nacimiento VARCHAR(225) NOT NULL
+        fecha_nacimiento DATE NOT NULL
       );
     `;
 

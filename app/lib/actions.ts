@@ -13,7 +13,6 @@ const InvoiceSchema = z.object({
   apellido_paterno: z.string(),
   apellido_materno: z.string(),
   fecha_nacimiento: z.string(),
-  date: z.string()
 });
  
  
@@ -249,6 +248,7 @@ export async function authenticate(
     if ((error as Error).message.includes('CredentialsSignin')) {
       return 'CredentialSignin';
     }
+    console.error(error)
     throw error;
   }
 }

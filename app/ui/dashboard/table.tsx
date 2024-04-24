@@ -68,7 +68,7 @@ export default async function InternosTable({
                     {interno.apellido_materno}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {interno.fecha_nacimiento}
+                    {formatDateToLocal(interno.fecha_nacimiento)}
                   </td>
                 </tr>
               ))}
